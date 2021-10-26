@@ -52,36 +52,7 @@ def parse_trails(mountain_domain, name, open):
         trails["areas"].append(area)
     return trails 
 
-def get_config():
-  with open("config.yaml", "r") as f:
-    config = yaml.load(f.read(), Loader=yaml.SafeLoader)
-  return config
-
 def main():
-    if len(sys.argv) > 1  and sys.argv[1] == "open":
-      open = True
-    ratings = { 1 : "●", 2 : "■", 3 : "♦", 4 : "♦♦", 5 : "⬬"}
-    resorts = get_config()["resorts"]
-
-    data = []
-    for resort in resorts:
-        t = parse_trails(resort["urlBase"], resort["name"], open)
-                
-        for a in t["areas"]:
-            for r in a["trails"]:
-                trail = [t["resort"], a["name"], r["name"], ratings[r["rating"]], r["status"]]
-                data.append(trail) 
-
-    patterns = [
-        ('OPEN', lambda text: style(text, fg='green')),
-        ('●', lambda text: style(text, fg='green')),
-        ('■', lambda text: style(text, fg='blue')),
-        ('⬬', lambda text: style(text, fg='red')),
-    ]   
-
-
-    table = columnar(data, headers=['Resort', 'Area', 'Trail', 'Difficulty', 'Status'], patterns=patterns, no_borders=True)
-    print(table)    
-
+    pass
 if __name__ == "__main__":
     main()

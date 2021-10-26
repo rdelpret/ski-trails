@@ -1,0 +1,9 @@
+resorts:
+- urlBase: keystoneresort
+  name: Keystone
+- urlBase: vail
+  name: Vail
+- urlBase: breckenridge 
+  name: Breckenridge
+- urlBase: beavercreek
+  name: Beaver Creek

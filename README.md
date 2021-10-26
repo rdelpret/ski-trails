@@ -25,6 +25,10 @@ optional arguments:
 
 By default, show all trails from config.yaml
 ```
+
+## Config
+
+```
 ➜ cat config.yaml
 resorts:
 - urlBase: keystoneresort

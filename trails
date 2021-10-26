@@ -16,8 +16,8 @@ def get_config():
   return config
 
 def cli():
-    parser = argparse.ArgumentParser(description="Get Ski Trail Status", epilog="")
-    parser.add_argument('-o', '--open', default=False, action='store_true', help="Open tails only")
+    parser = argparse.ArgumentParser(description="Get Ski Trail Status", epilog="By default, show all trails from config.yaml")
+    parser.add_argument('-o', '--open', default=False, action='store_true', help="Open trails only")
     args = parser.parse_args()
 
     if args.open:
@@ -45,7 +45,6 @@ def cli():
 
     table = columnar(data, headers=['Resort', 'Area', 'Trail', 'Difficulty', 'Status'], patterns=patterns, no_borders=True)
     print(table)
-
 
 
 def main():

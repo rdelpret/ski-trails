@@ -1,4 +1,4 @@
-# ski-trails
+#🌲 ski-trails 🌲
 
 One of the benifits of vail resports (lol) is they all use the same code for their webistes, so we can parse it.
 

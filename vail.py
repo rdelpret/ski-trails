@@ -4,9 +4,6 @@ import requests
 from bs4 import BeautifulSoup
 import json
 import yaml
-from columnar import columnar
-from click import style
-import sys
 
 '''
 Data Structure

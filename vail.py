@@ -17,7 +17,7 @@ trail  = {"name" : "", "status" : "", "rating" : ""}
 
 
 def parse_trails(mountain_domain, name, open):
-    url = "https://www.%s.com/the-mountain/mountain-conditions/terrain-and-lift-status.aspx" % mountain_domain
+    url = "https://www.%s/the-mountain/mountain-conditions/terrain-and-lift-status.aspx" % mountain_domain
 
     r = requests.get(url)
     soup = BeautifulSoup(r.text, 'html.parser')

@@ -15,16 +15,12 @@ def cli():
     parser = argparse.ArgumentParser(description="Get Ski Trail Status", epilog="By default, show all trails from config.yaml")
     parser.add_argument('-o', '--open', default=False, action='store_true', help="Open trails only")
     args = parser.parse_args()
-
-    if args.open:
-        open = True
-
     ratings = { 1 : "●", 2 : "■", 3 : "♦", 4 : "♦♦", 5 : "⬬"}
     resorts = get_config()["resorts"]
 
     data = []
     for resort in resorts:
-        t = parse_trails(resort["urlBase"], resort["name"], open)
+        t = parse_trails(resort["urlBase"], resort["name"], args.open)
 
         for a in t["areas"]:
             for r in a["trails"]:

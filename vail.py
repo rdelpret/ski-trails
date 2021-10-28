@@ -41,7 +41,7 @@ def parse_trails(mountain_domain, name, open):
         area   = {"name" : a["Name"], "trails" : []}
 
         for t in a["Trails"]:
-            if not t["IsOpen"]:
+            if open and  not t["IsOpen"]:
                 continue
             trail  = {"name" : t["Name"], "rating" : t["Difficulty"]}
             trail["status"] = "OPEN" if t["IsOpen"] else "CLOSED"

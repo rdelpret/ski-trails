@@ -15,7 +15,7 @@ trail  = {"name" : "", "status" : "", "rating" : ""}
 ratings = { "beginner" : 2, "moredifficult" : 2, "mostdifficult" : 3, "extreme" : 4,}
 
 def get_trails():
-  with open("plugins/abasin/abasin.json", "r") as f:
+  with open("data/abasin.json", "r") as f:
     trails = json.loads(f.read())
   return trails
 

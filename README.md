@@ -32,16 +32,21 @@ By default, show all trails from config.yaml
 ```
 
 ## Config
+the configuration file adds or removes resorts you want to get trail info for. Currently the vail plugin can support any vail resort (you could add park city for example) and the abasin plugin adds Arapahoe Basin.
 
 ```
 ➜ cat config.yaml
-resorts:
-- urlBase: keystoneresort
-  name: Keystone
-- urlBase: vail
-  name: Vail
-- urlBase: breckenridge
-  name: Breckenridge
-- urlBase: beavercreek
-  name: Beaver Creek
+- plugin: vail
+  resorts:
+  - name: Keystone
+    urlBase: keystoneresort.com
+  - name: Vail
+    urlBase: vail.com
+  - name: Breckenridge
+    urlBase: breckenridge.com
+  - name: Beaver Creek
+    urlBase: beavercreek.com
+- plugin: abasin
+  resorts:
+  - name: Arapahoe Basin
 ```

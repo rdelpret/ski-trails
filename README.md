@@ -32,7 +32,7 @@ By default, show all trails from config.yaml
 ```
 
 ## Config
-the configuration file adds or removes resorts you want to get trail info for. Currently the vail plugin can support any vail resort (you could add park city for example) and the abasin plugin adds Arapahoe Basin.
+The configuration file adds or removes resorts you want to get trail info for. Currently the vail plugin can support any vail resort (you could add Park City for example as they are owned by vail) and the abasin plugin adds Arapahoe Basin trails.
 
 ```
 ➜ cat config.yaml

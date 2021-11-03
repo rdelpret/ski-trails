@@ -1,6 +1,11 @@
 # 🌲 ski-trails 🌲
 
-One of the benifits of vail resports (lol) is they all use the same code for their webistes, so we can parse it.
+Parses and displays data on ski trails from various sources. These sources are written as "plugins". 
+
+Currently we have plugins for:
+- Vail Resorts
+- Abasin
+
 
 ## Usage
 ```

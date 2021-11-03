@@ -4,7 +4,7 @@ Parses and displays data on ski trails from various sources. These sources are w
 
 Currently we have plugins for:
 - Vail Resorts
-- Abasin
+- Arapahoe Basin 
 
 
 ## Usage

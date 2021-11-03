@@ -3,38 +3,50 @@
 import yaml
 from columnar import columnar
 from click import style
-from plugins.vail.vail import parse_trails as vail
-from plugins.abasin.abasin import parse_trails as abasin
+from plugins.vail import parse_trails as vail
+from plugins.abasin import parse_trails as abasin
 import argparse
+
+
+RATINGS = ratings = { 1 : "●", 2 : "■", 3 : "♦", 4 : "♦♦", 5 : "⬬"}
+
 
 def get_config():
   with open("config.yaml", "r") as f:
     config = yaml.load(f.read(), Loader=yaml.SafeLoader)
   return config
 
+
+
 def cli():
     parser = argparse.ArgumentParser(description="Get Ski Trail Status", epilog="By default, show all trails from config.yaml")
     parser.add_argument('-o', '--open', default=False, action='store_true', help="Open trails only")
     args = parser.parse_args()
-    ratings = { 1 : "●", 2 : "■", 3 : "♦", 4 : "♦♦", 5 : "⬬"}
-    resorts = get_config()["resorts"]
-
-    data = []
-    for resort in resorts:
-        t = vail(resort["urlBase"], resort["name"], args.open)
-
-        for a in t["areas"]:
-            for r in a["trails"]:
-                trail = [t["resort"], a["name"], r["name"], ratings[r["rating"]], r["status"]]
-                data.append(trail)
-
     
-    t = abasin(args.open)
+    data = []
+    config = get_config()
 
-    for a in t["areas"]:
-        for r in a["trails"]:
-            trail = [t["resort"], a["name"], r["name"], ratings[r["rating"]], r["status"]]
-            data.append(trail)
+    for c in config:
+        
+        # VAIL RESORTS PLUGIN
+        if c["plugin"] == "vail":
+            resorts = c["resorts"]
+            for resort in resorts:
+                t = vail(resort["urlBase"], resort["name"], args.open)
+
+                for a in t["areas"]:
+                    for r in a["trails"]:
+                        trail = [t["resort"], a["name"], r["name"], ratings[r["rating"]], r["status"]]
+                        data.append(trail)
+        
+        # ABASIN PLUGIN
+        if c["plugin"] == "abasin":
+            t = abasin(args.open)
+
+            for a in t["areas"]:
+                for r in a["trails"]:
+                    trail = [t["resort"], a["name"], r["name"], ratings[r["rating"]], r["status"]]
+                    data.append(trail)
 
     patterns = [
         ('OPEN', lambda text: style(text, fg='green')),

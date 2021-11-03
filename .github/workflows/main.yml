@@ -15,4 +15,5 @@ jobs:
 
       - name: Ensure CLI works
         run: |
+          pip install -r requirements.txt
           ./trails -o

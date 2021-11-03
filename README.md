@@ -11,10 +11,12 @@ Currently we have plugins for:
 ```
 ➜ ./trails --open
 
-  RESORT    AREA             TRAIL       DIFFICULTY  STATUS
+  RESORT         AREA                TRAIL                 DIFFICULTY  STATUS
 
-  Keystone  Dercum Mountain  Endeavor    ●           OPEN
-  Keystone  Dercum Mountain  Schoolmarm  ●           OPEN
+  Keystone       Dercum Mountain     Endeavor              ●           OPEN
+  Keystone       Dercum Mountain     Schoolmarm            ●           OPEN
+  Arapaho Basin  Front Side Terrain  Lower Mountain Blues  ■           OPEN
+  Arapaho Basin  Front Side Terrain  High Noon             ■           OPEN
 ```
 
 ## Help

@@ -3,7 +3,8 @@
 import yaml
 from columnar import columnar
 from click import style
-from vail import parse_trails
+from plugins.vail.vail import parse_trails as vail
+from plugins.abasin.abasin import parse_trails as abasin
 import argparse
 
 def get_config():
@@ -20,12 +21,20 @@ def cli():
 
     data = []
     for resort in resorts:
-        t = parse_trails(resort["urlBase"], resort["name"], args.open)
+        t = vail(resort["urlBase"], resort["name"], args.open)
 
         for a in t["areas"]:
             for r in a["trails"]:
                 trail = [t["resort"], a["name"], r["name"], ratings[r["rating"]], r["status"]]
                 data.append(trail)
+
+    
+    t = abasin(args.open)
+
+    for a in t["areas"]:
+        for r in a["trails"]:
+            trail = [t["resort"], a["name"], r["name"], ratings[r["rating"]], r["status"]]
+            data.append(trail)
 
     patterns = [
         ('OPEN', lambda text: style(text, fg='green')),

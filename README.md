@@ -7,7 +7,7 @@ Currently we have plugins for:
 - Arapahoe Basin 
 
 
-## Usage
+## CLI Usage
 ```
 ➜ ./trails --open
 

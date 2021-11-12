@@ -13,8 +13,8 @@ trail  = {"name" : "", "status" : "", "rating" : ""}
 '''
 
 
-def parse_trails(mountain_domain, name, open):
-    url = "https://www.%s/the-mountain/mountain-conditions/terrain-and-lift-status.aspx" % mountain_domain
+def vail(resort):
+    url = "https://www.%s/the-mountain/mountain-conditions/terrain-and-lift-status.aspx" % resort["urlBase"]
 
     r = requests.get(url)
     soup = BeautifulSoup(r.text, 'html.parser')
@@ -31,7 +31,7 @@ def parse_trails(mountain_domain, name, open):
     raw_conditions = raw_conditions.split(";")[0]
     t = json.loads(raw_conditions)
 
-    trails = {"resort" : name, "areas" : []}
+    trails = {"resort" : resort["name"], "areas" : []}
 
     for a in t["GroomingAreas"]:
 
@@ -41,8 +41,6 @@ def parse_trails(mountain_domain, name, open):
         area   = {"name" : a["Name"], "trails" : []}
 
         for t in a["Trails"]:
-            if open and  not t["IsOpen"]:
-                continue
             trail  = {"name" : t["Name"], "rating" : t["Difficulty"]}
             trail["status"] = "OPEN" if t["IsOpen"] else "CLOSED"
             area["trails"].append(trail)
@@ -51,5 +49,6 @@ def parse_trails(mountain_domain, name, open):
 
 def main():
     pass
+
 if __name__ == "__main__":
     main()

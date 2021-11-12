@@ -7,9 +7,11 @@ from plugins.vail import vail
 from plugins.abasin import parse_trails as abasin
 import argparse
 import threading
+import os
 
 # Globals
 RATINGS = ratings = { 1 : "●", 2 : "■", 3 : "♦", 4 : "♦♦", 5 : "⬬"}
+
 
 def get_config():
     '''
@@ -17,8 +19,9 @@ def get_config():
     '''
 
     #TODO add some safety here
-
-    with open("config.yaml", "r") as f:
+    trails_dir = os.path.dirname(os.path.realpath(__file__))
+    
+    with open(trails_dir + "/config.yaml", "r") as f:
       config = yaml.load(f.read(), Loader=yaml.SafeLoader)
     return config
 

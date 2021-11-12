@@ -22,13 +22,14 @@ Currently we have plugins for:
 ## Help
 ```
 ./trails --help
-usage: trails [-h] [-o]
+usage: trails [-h] [-o] [-s]
 
 Get Ski Trail Status
 
 optional arguments:
-  -h, --help  show this help message and exit
-  -o, --open  Open trails only
+  -h, --help           show this help message and exit
+  -o, --open           Open trails only
+  -s, --single-thread  Run with 1 thread
 
 By default, show all trails from config.yaml
 ```

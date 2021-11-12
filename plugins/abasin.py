@@ -4,6 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 import json
 import yaml
+import os
 
 '''
 Data Structure
@@ -15,7 +16,8 @@ trail  = {"name" : "", "status" : "", "rating" : ""}
 ratings = { "beginner" : 2, "moredifficult" : 2, "mostdifficult" : 3, "extreme" : 4,}
 
 def get_trails():
-  with open("data/abasin.json", "r") as f:
+  data_dir = os.path.dirname(os.path.realpath(__file__))
+  with open(data_dir + "/../data/abasin.json", "r") as f:
     trails = json.loads(f.read())
   return trails
 

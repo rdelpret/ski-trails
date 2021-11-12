@@ -8,16 +8,25 @@ from plugins.abasin import parse_trails as abasin
 import argparse
 import threading
 
+# Globals
 RATINGS = ratings = { 1 : "●", 2 : "■", 3 : "♦", 4 : "♦♦", 5 : "⬬"}
 
 def get_config():
-  with open("config.yaml", "r") as f:
-    config = yaml.load(f.read(), Loader=yaml.SafeLoader)
-  return config
+    '''
+    helper func to parse configfile
+    '''
+
+    #TODO add some safety here
+
+    with open("config.yaml", "r") as f:
+      config = yaml.load(f.read(), Loader=yaml.SafeLoader)
+    return config
 
 
 def plugin(resort):
-        
+    '''
+    wrapper func to run a plugin
+    '''    
     t = eval(resort["plugin"])(resort)
     
     for a in t["areas"]:
@@ -26,20 +35,10 @@ def plugin(resort):
             data.append(trail)
 
 
-def cli():
-
-    global data 
-    parser = argparse.ArgumentParser(description="Get Ski Trail Status", epilog="By default, show all trails from config.yaml")
-    parser.add_argument('-o', '--open', default=False, action='store_true', help="Open trails only")
-    args = parser.parse_args()
-    config = get_config()["resorts"]
-    data = []
-   
-    for c in config:
-        plugin(c)
-
-    if args.open: data = [i for i in data if i[4] == "OPEN"]
-
+def pretty_print(data):
+    '''
+    pretty print cli output
+    '''
     patterns = [
         ('OPEN', lambda text: style(text, fg='green')),
         ('●', lambda text: style(text, fg='green')),
@@ -47,10 +46,53 @@ def cli():
         ('⬬', lambda text: style(text, fg='red')),
     ]
 
-
     table = columnar(data, headers=['Resort', 'Area', 'Trail', 'Difficulty', 'Status'], patterns=patterns, no_borders=True)
     print(table)
 
+def parse_cli_args():
+    '''
+    parse cli args
+    '''
+    parser = argparse.ArgumentParser(description="Get Ski Trail Status", epilog="By default, show all trails from config.yaml")
+    parser.add_argument('-o', '--open', default=False, action='store_true', help="Open trails only")
+    parser.add_argument('-s', '--single-thread', default=False, action='store_true', help="Run with 1 thread")
+    return parser.parse_args()
+
+def multiproc(threads):
+    '''
+    generic fork function
+    '''
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
+
+def cli():
+    '''
+    Main function
+    '''
+
+    args = parse_cli_args()
+
+    global data 
+    data = []
+    config = get_config()["resorts"]
+
+    threads = []
+
+    for resort in config:  
+        if not args.single_thread: 
+            threads.append(threading.Thread(target=plugin, args=(resort,)))
+        else:
+            plugin(resort)
+     
+    if not args.single_thread: multiproc(threads)
+
+    if args.open: 
+        data = [i for i in data if i[4] == "OPEN"]
+    data.sort(key = lambda x: x[1])
+    data.sort(key = lambda x: x[0]) 
+    pretty_print(data) 
 
 def main():
     cli()

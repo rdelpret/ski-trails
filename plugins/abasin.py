@@ -31,11 +31,11 @@ def init_trails():
  
 
 
-def parse_trails(open):
+def parse_trails(resort):
 
     trails = init_trails()
 
-    url = "https://www.arapahoebasin.com/the-mountain/terrain-status/"
+    url = "https://www.%s/the-mountain/terrain-status/" % resort["urlBase"]
 
     rev_map = get_trails()
 
@@ -60,11 +60,11 @@ def parse_trails(open):
                 if rev_map.get(name) == a["name"]:
                     break 
                 area_index += 1
-            if open and status == "CLOSED":
-                continue 
             trails["areas"][area_index]["trails"].append(trail)
     return trails
+
 def main():
-  print(parse_trails(False))
+    pass
+
 if __name__ == "__main__":
     main()

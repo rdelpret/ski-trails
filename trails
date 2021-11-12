@@ -3,13 +3,12 @@
 import yaml
 from columnar import columnar
 from click import style
-from plugins.vail import parse_trails as vail
+from plugins.vail import vail
 from plugins.abasin import parse_trails as abasin
 import argparse
-
+import threading
 
 RATINGS = ratings = { 1 : "●", 2 : "■", 3 : "♦", 4 : "♦♦", 5 : "⬬"}
-
 
 def get_config():
   with open("config.yaml", "r") as f:
@@ -17,36 +16,29 @@ def get_config():
   return config
 
 
+def plugin(resort):
+        
+    t = eval(resort["plugin"])(resort)
+    
+    for a in t["areas"]:
+        for r in a["trails"]:
+            trail = [resort["name"], a["name"], r["name"], ratings[r["rating"]], r["status"]]
+            data.append(trail)
+
 
 def cli():
+
+    global data 
     parser = argparse.ArgumentParser(description="Get Ski Trail Status", epilog="By default, show all trails from config.yaml")
     parser.add_argument('-o', '--open', default=False, action='store_true', help="Open trails only")
     args = parser.parse_args()
-    
+    config = get_config()["resorts"]
     data = []
-    config = get_config()
-
+   
     for c in config:
-        
-        # VAIL RESORTS PLUGIN
-        if c["plugin"] == "vail":
-            resorts = c["resorts"]
-            for resort in resorts:
-                t = vail(resort["urlBase"], resort["name"], args.open)
+        plugin(c)
 
-                for a in t["areas"]:
-                    for r in a["trails"]:
-                        trail = [t["resort"], a["name"], r["name"], ratings[r["rating"]], r["status"]]
-                        data.append(trail)
-        
-        # ABASIN PLUGIN
-        if c["plugin"] == "abasin":
-            t = abasin(args.open)
-
-            for a in t["areas"]:
-                for r in a["trails"]:
-                    trail = [t["resort"], a["name"], r["name"], ratings[r["rating"]], r["status"]]
-                    data.append(trail)
+    if args.open: data = [i for i in data if i[4] == "OPEN"]
 
     patterns = [
         ('OPEN', lambda text: style(text, fg='green')),

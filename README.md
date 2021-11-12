@@ -38,17 +38,20 @@ The configuration file adds or removes resorts you want to get trail info for. C
 
 ```
 ➜ cat config.yaml
-- plugin: vail
-  resorts:
-  - name: Keystone
-    urlBase: keystoneresort.com
-  - name: Vail
-    urlBase: vail.com
-  - name: Breckenridge
-    urlBase: breckenridge.com
-  - name: Beaver Creek
-    urlBase: beavercreek.com
-- plugin: abasin
-  resorts:
-  - name: Arapahoe Basin
+resorts:
+- name: Keystone
+  urlBase: keystoneresort.com
+  plugin: vail
+- name: Vail
+  urlBase: vail.com
+  plugin: vail
+- name: Breckenridge
+  urlBase: breckenridge.com
+  plugin: vail
+- name: Beaver Creek
+  urlBase: beavercreek.com
+  plugin: vail
+- name: Arapahoe Basin
+  urlBase: arapahoebasin.com
+  plugin: abasin
 ```

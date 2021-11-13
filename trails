@@ -10,8 +10,9 @@ import threading
 import os
 
 # Globals
-RATINGS = ratings = { 1 : "●", 2 : "■", 3 : "♦", 4 : "♦♦", 5 : "⬬"}
-
+RATINGS = { 1 : "●", 2 : "■", 3 : "♦", 4 : "♦♦", 5 : "⬬"}
+CLI_HEADER = ['resort', 'area', 'trail', 'difficulty', 'status']
+RATINGS_FILTER = { "green" : "●", "blue" : "■", "black" : "♦", "doubleblack" : "♦♦", "terrainpark" : "⬬"}
 
 def get_config():
     '''
@@ -34,7 +35,7 @@ def plugin(resort):
     
     for a in t["areas"]:
         for r in a["trails"]:
-            trail = [resort["name"], a["name"], r["name"], ratings[r["rating"]], r["status"]]
+            trail = [resort["name"], a["name"], r["name"], RATINGS[r["rating"]], r["status"]]
             data.append(trail)
 
 
@@ -49,7 +50,7 @@ def pretty_print(data):
         ('⬬', lambda text: style(text, fg='red')),
     ]
 
-    table = columnar(data, headers=['Resort', 'Area', 'Trail', 'Difficulty', 'Status'], patterns=patterns, no_borders=True)
+    table = columnar(data, headers=CLI_HEADER, patterns=patterns, no_borders=True)
     print(table)
 
 def parse_cli_args():
@@ -58,8 +59,41 @@ def parse_cli_args():
     '''
     parser = argparse.ArgumentParser(description="Get Ski Trail Status", epilog="By default, show all trails from config.yaml")
     parser.add_argument('-o', '--open', default=False, action='store_true', help="Open trails only")
-    parser.add_argument('-s', '--single-thread', default=False, action='store_true', help="Run with 1 thread")
+    parser.add_argument('-s', '--sort', default=False, help="sort by (--sort difficulty)")
+    parser.add_argument('-f', '--filter', default=False, help="filter by (--filter difficulty=blue)")
     return parser.parse_args()
+
+def sort_trails(data, skey):
+    '''
+    function to handle cli output sorting
+    '''    
+
+    #default sort
+    data.sort(key = lambda x: x[1])
+    data.sort(key = lambda x: x[0])
+
+    #TODO sort difficulty in order of green, blue black, terrain park
+
+    # user supplied sort
+    if skey: data.sort(key = lambda x: x[CLI_HEADER.index(skey)])
+        
+    return data
+
+def filter_trails(data, f):
+    #TODO diffuclty=black gets double and single black diamonds when it should not but also kinda dont mind
+    #TODO take in multiple filters like resort=vail difficulty=black
+    # https://stackoverflow.com/questions/36166225/using-the-same-option-multiple-times-in-pythons-argparse/36170308
+    '''
+    function to handle cli output filtering
+    '''
+    fkey, f = f.split("=")
+
+    # Special case to convert from ascii char
+    if fkey == "difficulty": f = RATINGS_FILTER[f]
+    
+    data = [i for i in data if f.lower() in i[CLI_HEADER.index(fkey)].lower()]
+ 
+    return data
 
 def multiproc(threads):
     '''
@@ -76,7 +110,6 @@ def cli():
     '''
 
     args = parse_cli_args()
-
     global data 
     data = []
     config = get_config()["resorts"]
@@ -84,18 +117,19 @@ def cli():
     threads = []
 
     for resort in config:  
-        if not args.single_thread: 
-            threads.append(threading.Thread(target=plugin, args=(resort,)))
-        else:
-            plugin(resort)
+        threads.append(threading.Thread(target=plugin, args=(resort,)))
      
-    if not args.single_thread: multiproc(threads)
+    multiproc(threads)
 
     if args.open: 
         data = [i for i in data if i[4] == "OPEN"]
-    data.sort(key = lambda x: x[1])
-    data.sort(key = lambda x: x[0]) 
-    pretty_print(data) 
+    
+    if args.filter:
+        data = filter_trails(data, args.filter) 
+    
+    data = sort_trails(data, args.sort)
+    
+    if data: pretty_print(data) 
 
 def main():
     cli()

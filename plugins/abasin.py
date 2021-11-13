@@ -33,7 +33,7 @@ def init_trails():
  
 
 
-def parse_trails(resort):
+def abasin(resort):
 
     trails = init_trails()
 

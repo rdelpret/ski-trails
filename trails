@@ -3,11 +3,13 @@
 import yaml
 from columnar import columnar
 from click import style
-from plugins.vail import vail
-from plugins.abasin import parse_trails as abasin
 import argparse
 import threading
 import os
+
+# Plugins
+from plugins.vail import vail
+from plugins.abasin import abasin
 
 # Globals
 RATINGS = { 1 : "●", 2 : "■", 3 : "♦", 4 : "♦♦", 5 : "⬬"}

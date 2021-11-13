@@ -24,7 +24,7 @@ Get all open trails
 ```
 Get all trails in Blue Sky Basin and sort by difficulty
 ```
-trails --sort difficulty --filter area=blue
+➜ trails --sort difficulty --filter area=blue
 
   RESORT  AREA            TRAIL                 DIFFICULTY  STATUS
 

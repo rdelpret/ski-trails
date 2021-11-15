@@ -9,6 +9,7 @@ Currently we have plugins for:
 
 ## CLI Usage
 
+#### Examples
 Get all open trails
 ```
 ➜ ./trails --open
@@ -54,6 +55,22 @@ Get all trails in Blue Sky Basin and sort by difficulty
   Vail    Blue Sky Basin  Steep and Deep        ♦♦          CLOSED
 ```
 
+### Advanced Filters
+Rules for filters:
+- It is possible to use multiple filters
+- Except for difficulty, can fuzzy match (vai=VAil, arap=Arapahoe Basin, arapahoe=Arapahoe Basin, blu=Blue Sky Basin, etc.)
+
+#### Examples
+Show all open blue trails at vail
+```
+trails -o -f difficulty=blue -f resort=vail
+
+  RESORT  AREA      TRAIL             DIFFICULTY  STATUS
+
+  Vail    Mid-Vail  Powerline         ■           OPEN
+  Vail    Mid-Vail  Ramshorn - Lower  ■           OPEN
+  Vail    Mid-Vail  Ramshorn - Upper  ■           OPEN
+```
 
 ## Help
 ```

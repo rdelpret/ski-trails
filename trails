@@ -1,33 +1,22 @@
 #!/usr/bin/env python3
-
-import yaml
 from columnar import columnar
 from click import style
 import argparse
 import threading
-import os
+
+#lib 
+from lib.multi import multiproc
+from lib.transformations import filter_trails, sort_trails
+from lib.config import get_config
+import lib.constants
 
 # Plugins
 from plugins.vail import vail
 from plugins.abasin import abasin
 
 # Globals
-RATINGS = { 1 : "●", 2 : "■", 3 : "♦", 4 : "♦♦", 5 : "⬬"}
+
 CLI_HEADER = ['resort', 'area', 'trail', 'difficulty', 'status']
-RATINGS_FILTER = { "green" : "●", "blue" : "■", "black" : "♦", "doubleblack" : "♦♦", "terrainpark" : "⬬"}
-
-def get_config():
-    '''
-    helper func to parse configfile
-    '''
-
-    #TODO add some safety here
-    trails_dir = os.path.dirname(os.path.realpath(__file__))
-    
-    with open(trails_dir + "/config.yaml", "r") as f:
-      config = yaml.load(f.read(), Loader=yaml.SafeLoader)
-    return config
-
 
 def plugin(resort):
     '''
@@ -37,7 +26,7 @@ def plugin(resort):
     
     for a in t["areas"]:
         for r in a["trails"]:
-            trail = [resort["name"], a["name"], r["name"], RATINGS[r["rating"]], r["status"]]
+            trail = [resort["name"], a["name"], r["name"], lib.constants.RATINGS_MAP[r["rating"]]["sym"], r["status"]]
             data.append(trail)
 
 
@@ -52,7 +41,7 @@ def pretty_print(data):
         ('⬬', lambda text: style(text, fg='red')),
     ]
 
-    table = columnar(data, headers=CLI_HEADER, patterns=patterns, no_borders=True)
+    table = columnar(data, headers=lib.constants.CLI_HEADER, patterns=patterns, no_borders=True)
     print(table)
 
 def parse_cli_args():
@@ -62,49 +51,12 @@ def parse_cli_args():
     parser = argparse.ArgumentParser(description="Get Ski Trail Status", epilog="By default, show all trails from config.yaml")
     parser.add_argument('-o', '--open', default=False, action='store_true', help="Open trails only")
     parser.add_argument('-s', '--sort', default=False, help="sort by (--sort difficulty)")
-    parser.add_argument('-f', '--filter', default=False, help="filter by (--filter difficulty=blue)")
+    parser.add_argument('-f', '--filter', default=[], action="append", help="filter by (--filter difficulty=blue)")
     return parser.parse_args()
 
-def sort_trails(data, skey):
-    '''
-    function to handle cli output sorting
-    '''    
 
-    #default sort
-    data.sort(key = lambda x: x[1])
-    data.sort(key = lambda x: x[0])
 
-    #TODO sort difficulty in order of green, blue black, terrain park
 
-    # user supplied sort
-    if skey: data.sort(key = lambda x: x[CLI_HEADER.index(skey)])
-        
-    return data
-
-def filter_trails(data, f):
-    #TODO diffuclty=black gets double and single black diamonds when it should not but also kinda dont mind
-    #TODO take in multiple filters like resort=vail difficulty=black
-    # https://stackoverflow.com/questions/36166225/using-the-same-option-multiple-times-in-pythons-argparse/36170308
-    '''
-    function to handle cli output filtering
-    '''
-    fkey, f = f.split("=")
-
-    # Special case to convert from ascii char
-    if fkey == "difficulty": f = RATINGS_FILTER[f]
-    
-    data = [i for i in data if f.lower() in i[CLI_HEADER.index(fkey)].lower()]
- 
-    return data
-
-def multiproc(threads):
-    '''
-    generic fork function
-    '''
-    for t in threads:
-        t.start()
-    for t in threads:
-        t.join()
 
 def cli():
     '''
@@ -112,6 +64,7 @@ def cli():
     '''
 
     args = parse_cli_args()
+
     global data 
     data = []
     config = get_config()["resorts"]

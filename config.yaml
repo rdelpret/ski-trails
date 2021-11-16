@@ -1,7 +1,6 @@
 notifications:
-- cron: "* * * * *"
-  filter: "*"
-  sms: +1111111111
+- to: +1111111111
+  from: +2222222222
 
 resorts:
 - name: Keystone

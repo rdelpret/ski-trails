@@ -24,10 +24,6 @@ spec:
           image: trails
           imagePullPolicy: Never
           command:
-            - /bin/bash
+            - "./trails"
           args:
-            - -c
-            - ./trails --server
-          env:
-            - name: REDIS_ENDPOINT
-              value: "none"
+            - "--server"

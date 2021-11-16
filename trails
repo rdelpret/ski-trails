@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
+import os
+import sys
+import time
+import logging
+import threading
+import argparse
 from columnar import columnar
 from click import style
-import argparse
-import threading
-
-#lib 
+from twilio.rest import Client
 from lib.multi import multiproc
 from lib.transformations import filter_trails, sort_trails
 from lib.config import get_config
@@ -14,19 +17,17 @@ import lib.constants
 from plugins.vail import vail
 from plugins.abasin import abasin
 
-# Globals
-
-CLI_HEADER = ['resort', 'area', 'trail', 'difficulty', 'status']
 
 def plugin(resort):
     '''
     wrapper func to run a plugin
-    '''    
+    '''
     t = eval(resort["plugin"])(resort)
-    
+
     for a in t["areas"]:
         for r in a["trails"]:
-            trail = [resort["name"], a["name"], r["name"], lib.constants.RATINGS_MAP[r["rating"]]["sym"], r["status"]]
+            trail = [resort["name"], a["name"], r["name"],
+                     lib.constants.RATINGS_MAP[r["rating"]]["sym"], r["status"]]
             data.append(trail)
 
 
@@ -41,8 +42,9 @@ def pretty_print(data):
         ('⬬', lambda text: style(text, fg='red')),
     ]
 
-    table = columnar(data, headers=lib.constants.CLI_HEADER, patterns=patterns, no_borders=True)
+    table = columnar(data, headers=lib.constants.CLI_HEADER,patterns=patterns, no_borders=True)
     print(table)
+
 
 def parse_cli_args():
     '''
@@ -52,42 +54,130 @@ def parse_cli_args():
     parser.add_argument('-o', '--open', default=False, action='store_true', help="Open trails only")
     parser.add_argument('-s', '--sort', default=False, help="sort by (--sort difficulty)")
     parser.add_argument('-f', '--filter', default=[], action="append", help="filter by (--filter difficulty=blue)")
+    parser.add_argument('--server', default=False, action="store_true", help="start in server mode")
+    parser.add_argument('--debug', default=False, action="store_true", help="Server Mode: don't send texts")
+    parser.add_argument('--test', default=False, action="store_true", help="Server Mode: send one text with diff")
     return parser.parse_args()
 
+def process_trails(config):
+    global data
+    data = []
+    threads = []
+
+    for resort in config:
+        threads.append(threading.Thread(target=plugin, args=(resort,)))
+
+    multiproc(threads)
+
+    return data
 
 
+def send_notifications(args, config, diff):
+    for n in config["notifications"]:
+        if diff:
+            logging.info("New trails found (%s)" % len(diff))
+
+            client = Client(account_sid, auth_token)
+            body = "🌲 NEW TRAILS OPEN! 🌲\n--------------------------\n"
+            for i in diff:
+                body += "%s - %s %s\n" % (i[0], i[2], i[3])
+
+            body = body.strip()
+
+            if not args.debug:
+                message = client.messages.create(
+                    to=n["sms"],
+                    from_=n["from"],
+                    body=str(body))
+            else:
+                logging.info("Would have sent text:\n\n%s\n" % body)
+
+def test_data(l):
+    '''
+    Add test data to test twilio
+    '''
+
+    test = ['Breckenridge', 'Peak 6', 'Irie', '♦♦', 'OPEN']
+    test2 = ['Keystone', 'Outback', 'Christmas Tree', '♦', 'OPEN']
+    test3 = ['Breckenridge', 'Peak 7 Alpine', 'Magic Carpet', '♦♦', 'OPEN']
+    l.append(test)
+    l.append(test2)
+    l.append(test3)
+
+    return l
+
+def server(args, config):
+
+    global account_sid
+    global auth_token
+
+    account_sid = os.environ['TWILIO_ACCOUNT_SID']
+    auth_token = os.environ['TWILIO_AUTH_TOKEN']
+    old = []
+
+    while True:
+
+        # process trails
+        new = process_trails(config["resorts"])
+
+        # if this is the first loop, copy old data to new data
+        if not old:
+            old = new.copy()
+            continue
+
+        # append test data if testing twilio functionality
+        if args.test:
+            new = test_data(new)
+
+        # find the diff
+        diff = [x for x in new if x not in old]
+
+        # filter out trails that have closed
+        diff = filter_trails(diff, ["status=open"])
+
+        # send notifications
+        send_notifications(args, config, diff)
+
+        # copy new list to old list
+        old = new.copy()
+
+        if args.test:
+            sys.exit(0)
+
+        time.sleep(60)
 
 
-def cli():
+def cli(args, config):
+
+    data = process_trails(config["resorts"])
+
+    if args.open:
+        data = [i for i in data if i[4] == "OPEN"]
+
+    if args.filter:
+        data = filter_trails(data, args.filter)
+
+    data = sort_trails(data, args.sort)
+
+    if data:
+        pretty_print(data)
+
+
+def main():
     '''
     Main function
     '''
+    logging.basicConfig(level=logging.INFO)
 
     args = parse_cli_args()
 
-    global data 
-    data = []
-    config = get_config()["resorts"]
+    config = get_config()
 
-    threads = []
+    if args.server:
+        server(args, config)
 
-    for resort in config:  
-        threads.append(threading.Thread(target=plugin, args=(resort,)))
-     
-    multiproc(threads)
+    cli(args, config)
 
-    if args.open: 
-        data = [i for i in data if i[4] == "OPEN"]
-    
-    if args.filter:
-        data = filter_trails(data, args.filter) 
-    
-    data = sort_trails(data, args.sort)
-    
-    if data: pretty_print(data) 
-
-def main():
-    cli()
 
 if __name__ == "__main__":
     main()

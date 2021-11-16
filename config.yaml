@@ -1,3 +1,7 @@
+notifications:
+- to: +1111111111
+  from: +2222222222
+
 resorts:
 - name: Keystone
   urlBase: keystoneresort.com

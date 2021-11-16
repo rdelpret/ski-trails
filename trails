@@ -26,10 +26,8 @@ def plugin(resort):
 
     for a in t["areas"]:
         for r in a["trails"]:
-            trail = [resort["name"], a["name"], r["name"],
-                     lib.constants.RATINGS_MAP[r["rating"]]["sym"], r["status"]]
+            trail = [resort["name"], a["name"], r["name"], lib.constants.RATINGS_MAP[r["rating"]]["sym"], r["status"]]
             data.append(trail)
-
 
 def pretty_print(data):
     '''

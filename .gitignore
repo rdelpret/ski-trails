@@ -135,3 +135,7 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+
+# Pyenv virtual environment file
+.python-version

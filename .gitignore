@@ -135,3 +135,18 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+.DS_*
+*.log
+logs
+**/*.backup.*
+**/*.back.*
+
+node_modules
+bower_components
+
+*.sublime*
+
+psd
+thumb
+sketch

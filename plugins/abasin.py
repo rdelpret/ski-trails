@@ -13,24 +13,25 @@ area   = {"name" : "", "trails" : []}
 trail  = {"name" : "", "status" : "", "rating" : ""}
 '''
 
-ratings = { "beginner" : 2, "moredifficult" : 2, "mostdifficult" : 3, "extreme" : 4,}
+ratings = {"beginner": 1, "moredifficult": 2,
+           "mostdifficult": 3, "extreme": 4, }
+
 
 def get_trails():
-  data_dir = os.path.dirname(os.path.realpath(__file__))
-  with open(data_dir + "/../data/abasin.json", "r") as f:
-    trails = json.loads(f.read())
-  return trails
+    data_dir = os.path.dirname(os.path.realpath(__file__))
+    with open(data_dir + "/../data/abasin.json", "r") as f:
+        trails = json.loads(f.read())
+    return trails
 
 
 def init_trails():
     rev_map = get_trails()
-    trails = {"resort" : "Arapaho Basin", "areas" : []}
+    trails = {"resort": "Arapaho Basin", "areas": []}
     areas = list(rev_map.values())
     areas = [i for n, i in enumerate(areas) if i not in areas[:n]]
     for i in areas:
-        trails["areas"].append({"name" : i, "trails"  : []})
+        trails["areas"].append({"name": i, "trails": []})
     return trails
- 
 
 
 def abasin(resort):
@@ -43,8 +44,8 @@ def abasin(resort):
 
     r = requests.get(url)
     soup = BeautifulSoup(r.text, 'html.parser')
-    soup = soup.find_all("div", {"class" : "ab-status"})
-    
+    soup = soup.find_all("div", {"class": "ab-status"})
+
     for i in soup:
         name = i.text.strip()
         area = rev_map.get(name)
@@ -56,17 +57,19 @@ def abasin(resort):
             level = False
             status = False
         if level and area:
-            trail  = {"name" : name, "status" : status, "rating" : ratings[level]}
+            trail = {"name": name, "status": status, "rating": ratings[level]}
             area_index = 0
             for a in trails["areas"]:
                 if rev_map.get(name) == a["name"]:
-                    break 
+                    break
                 area_index += 1
             trails["areas"][area_index]["trails"].append(trail)
     return trails
 
+
 def main():
     pass
+
 
 if __name__ == "__main__":
     main()

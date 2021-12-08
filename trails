@@ -12,11 +12,14 @@ from lib.multi import multiproc
 from lib.transformations import filter_trails, sort_trails
 from lib.config import get_config
 import lib.constants
+import json
+from flask import Flask
 
 # Plugins
 from plugins.vail import vail
 from plugins.abasin import abasin
 
+app = Flask(__name__)
 
 def plugin(resort):
     '''
@@ -55,6 +58,7 @@ def parse_cli_args():
     parser.add_argument('--server', default=False, action="store_true", help="start in server mode")
     parser.add_argument('--debug', default=False, action="store_true", help="Server Mode: don't send texts")
     parser.add_argument('--test', default=False, action="store_true", help="Server Mode: send one text with diff")
+    parser.add_argument('--api', default=False, action="store_true", help="API Mode: serve open trails as an endpoint")
     return parser.parse_args()
 
 def process_trails(config):
@@ -161,6 +165,23 @@ def cli(args, config):
         pretty_print(data)
 
 
+@app.route("/")
+def trails():
+    config = get_config()
+    data = process_trails(config["resorts"])
+    data = {"trails" : [i for i in data if i[4] == "OPEN"]}
+    response = app.response_class(
+        response=json.dumps(data),
+        status=200,
+        mimetype='application/json'
+    )
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
+
+def api():
+    app.run()
+
+
 def main():
     '''
     Main function
@@ -173,8 +194,10 @@ def main():
 
     if args.server:
         server(args, config)
-
-    cli(args, config)
+    elif args.api:
+        api()
+    else: 
+        cli(args, config)
 
 
 if __name__ == "__main__":

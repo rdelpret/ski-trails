@@ -29,6 +29,7 @@ def vail(resort):
     raw_conditions = raw_conditions.replace("\n", "")
     raw_conditions = "{" + raw_conditions.split("{", 2)[2]
     raw_conditions = raw_conditions.split(";")[0]
+    raw_conditions = "{\"GroomingAreas\" : [" + raw_conditions
     t = json.loads(raw_conditions)
 
     trails = {"resort" : resort["name"], "areas" : []}

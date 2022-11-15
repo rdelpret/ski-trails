@@ -18,3 +18,7 @@ resorts:
 - name: Arapahoe Basin 
   urlBase: arapahoebasin.com
   plugin: abasin
+- name: Winter Park
+  urlBase: winterparkresort.com
+  plugin: mtn_powder
+  resort_id: 5

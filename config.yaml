@@ -26,3 +26,6 @@ resorts:
   urlBase: steamboat.com
   plugin: mtn_powder
   mtn_powder_resort_id: 6
+- name: Copper
+  urlBase: coppercolorado.com
+  plugin: copper

@@ -17,6 +17,7 @@ import lib.constants
 from plugins.vail import vail
 from plugins.abasin import abasin
 from plugins.mtn_powder import mtn_powder
+from plugins.copper import copper
 
 
 def plugin(resort):

@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 
 import requests
-from bs4 import BeautifulSoup
-import json
-import yaml
 
 '''
 Data Structure
@@ -21,9 +18,9 @@ difficulty_map =  {
 
 def cleanup_status(status):
     if status == "opening":
-        return "Open"
+        return "OPEN"
     if status == "closed":
-        return "Closed"
+        return "CLOSED"
     return status
 
 def copper(resort):

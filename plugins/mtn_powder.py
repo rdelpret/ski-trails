@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 
 import requests
-from bs4 import BeautifulSoup
-import json
-import yaml
 
 '''
 Data Structure
@@ -44,7 +41,7 @@ def mtn_powder(resort):
             trail = {
                 "name": tr['Name'],
                 "rating": difficulty_map[tr['TrailIcon']],
-                "status": tr['Status']
+                "status": tr['Status'].upper()
             }
             area['trails'].append(trail)
 

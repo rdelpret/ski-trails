@@ -21,4 +21,8 @@ resorts:
 - name: Winter Park
   urlBase: winterparkresort.com
   plugin: mtn_powder
-  resort_id: 5
+  mtn_powder_resort_id: 5
+- name: Steamboat
+  urlBase: steamboat.com
+  plugin: mtn_powder
+  mtn_powder_resort_id: 6

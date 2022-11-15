@@ -12,10 +12,18 @@ area   = {"name" : "", "trails" : []}
 trail  = {"name" : "", "status" : "", "rating" : ""}
 '''
 
+difficulty_map =  {
+  'GreenCircle': 'green',
+  'Park': 'park',
+  'BlackDiamond': 'black',
+  'BlueBlackSquare': 'black', # TODO: Blue black?
+  'BlueSquare': 'blue',
+  'ExtremeTerrain': 'double',
+  'DoubleBlackDiamond': 'double'
+}
 
 def mtn_powder(resort):
-    print(resort)
-    resort_id = resort["resort_id"]
+    resort_id = resort["mtn_powder_resort_id"]
     url = f"https://mtnpowder.com/feed?resortId={resort_id}"
     data = requests.get(url).json()
 
@@ -28,35 +36,20 @@ def mtn_powder(resort):
         }
 
         for tr in ma['Trails']:
+            
+            # Steamboat has their snowshoe trails listed
+            if tr['TrailIcon'] == 'Snowshoe':
+                continue
+
             trail = {
                 "name": tr['Name'],
-                # "rating": tr['Difficulty'],
-                "rating": 'green',
+                "rating": difficulty_map[tr['TrailIcon']],
                 "status": tr['Status']
             }
             area['trails'].append(trail)
 
         trails['areas'].append(area)
 
-        # print(area)
-
-    # area = {"name": "Some Region", "trails": []}
-    # trail = {"name": "Duncan's Run", "rating": "green", "status": "OPEN"}
-    # area["trails"].append(trail)
-    # trails["areas"].append(area)
-
-    # for a in t["GroomingAreas"]:
-
-    #     if "All Summer Terrain" in a["Name"]:
-    #       continue
-
-    #     area   = {"name" : a["Name"], "trails" : []}
-
-    #     for t in a["Trails"]:
-    #         trail  = {"name" : t["Name"], "rating" : t["Difficulty"]}
-    #         trail["status"] = "OPEN" if t["IsOpen"] else "CLOSED"
-    #         area["trails"].append(trail)
-    #     trails["areas"].append(area)
     return trails 
 
 def main():

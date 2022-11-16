@@ -23,8 +23,8 @@ def cleanup_status(status):
         return "CLOSED"
     return status
 
-def copper(resort):
-    url = "https://www.coppercolorado.com/api/v1/dor/status"
+def copper_eldora(resort):
+    url = "https://%s/api/v1/dor/status" % resort["urlBase"]
     data = requests.get(url).json()
     data = list(filter(lambda d: d["subtype"] == "alpine trail", data))
 

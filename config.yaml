@@ -28,7 +28,10 @@ resorts:
   mtn_powder_resort_id: 6
 - name: Copper
   urlBase: coppercolorado.com
-  plugin: copper
+  plugin: copper_eldora
 - name: Loveland
   urlBase: skiloveland.com
   plugin: loveland
+- name: Eldora
+  urlBase: eldora.com
+  plugin: copper_eldora

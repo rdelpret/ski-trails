@@ -17,7 +17,7 @@ import lib.constants
 from plugins.vail import vail
 from plugins.abasin import abasin
 from plugins.mtn_powder import mtn_powder
-from plugins.copper import copper
+from plugins.copper_eldora import copper_eldora
 from plugins.loveland import loveland
 
 

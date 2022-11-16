@@ -29,3 +29,6 @@ resorts:
 - name: Copper
   urlBase: coppercolorado.com
   plugin: copper
+- name: Loveland
+  urlBase: skiloveland.com
+  plugin: loveland

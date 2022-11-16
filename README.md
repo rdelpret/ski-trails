@@ -3,8 +3,11 @@
 Parses and displays data on ski trails from various sources. These sources are written as "plugins". 
 
 Currently we have plugins for:
-- Vail Resorts
-- Arapahoe Basin 
+- Vail Resorts, USA
+- Arapahoe Basin, CO
+- Mtn Powder Resorts (Winter Park CO, Steamboat CO)
+- Powdr Corporation (Copper CO, Eldora CO, Snowbird UT)
+- Loveland, CO
 
 
 ## CLI Usage

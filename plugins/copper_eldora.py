@@ -13,7 +13,8 @@ difficulty_map =  {
   'easier': 'green',
   'more_difficult': 'blue',
   'most_difficult': 'black',
-  'extremely_difficult': 'double'
+  'extremely_difficult': 'double',
+  'extremely_difficult_2' : 'double'
 }
 
 def cleanup_status(status):
@@ -24,7 +25,7 @@ def cleanup_status(status):
     return status
 
 def copper_eldora(resort):
-    url = "https://%s/api/v1/dor/status" % resort["urlBase"]
+    url = "https://api.%s/api/v1/dor/status" % resort["urlBase"]
     data = requests.get(url).json()
     data = list(filter(lambda d: d["subtype"] == "alpine trail", data))
 

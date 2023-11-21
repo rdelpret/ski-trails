@@ -25,7 +25,7 @@ def cleanup_status(status):
     return status
 
 def copper_eldora(resort):
-    url = "https://%s/api/v1/dor/status" % resort["urlBase"]
+    url = "https://api.%s/api/v1/dor/status" % resort["urlBase"]
     data_str = requests.get(url)
     trails = {"name" : resort["name"], "areas" : []}
     try: 
